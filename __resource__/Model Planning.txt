@@ -1,0 +1,57 @@
+# Product
+## ProductCategory
+name = CharField(max_length=150)
+status = BooleanField(default=True)
+
+## Product
+product_category = Fk(ProductCategory, delete)
+name = CharField(max_length=255)
+description = TextField
+price = Decimal
+stock = IntegerField
+cover_image = ImageField
+status = BooleanField()
+
+## ProductImages
+product = FK(Product, delete)
+images = ImageField()
+
+
+# Cart
+## Cart
+user = FK(User, delete)
+product = FK(Product, delete)
+quantity = IntegerField(default=1)
+
+
+# Order
+## Order
+user = FK(User, delete)
+date_time = DateTimeField()
+name = CharField(max_length=150)
+address = TextField()
+payment = BooleanField(default=False)
+
+
+## Order Details
+order = Fk(Order, delete)
+product = Fk(Product, delete)
+quanitity = IntegerField()
+product_price = Decimal()
+
+
+# User Profile
+## UserProfile
+user = FK(User, delete) - OneToOne Relation
+address = TextField(null=True, blank=True)
+mobile = CharField(max_length=10, null=True, blank=True)
+profile_picture = ImageField(null=True, blank=True)
+
+
+# Payment
+## Payment
+order = Fk(Order, delete)
+payment_status = CharField(max_length=255)
+payment_id = CharField(max_length=255)
+request_id = CharField(max_length=255)
+payment_method = CharField(max_length=255)

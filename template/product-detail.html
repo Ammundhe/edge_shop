@@ -1,0 +1,99 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+    <!-- Product Details Section Begin -->
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item">
+                            <img class="product__details__pic__item--large"
+                                src="{{Product.cover_image.url}}" alt="">
+                        </div>
+                        <div class="product__details__pic__slider owl-carousel">
+                            {% for productimage in ProductImage %}
+                            <img data-imgbigurl="{{productimage.image.url}}"
+                                src="{{productimage.image.url}}" alt="">
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__text">
+                        <h3>{{Product.name}}</h3>
+                        <div class="product__details__price">₹{{Product.price}}</div>
+                        {% if request.user.is_authenticated %}
+                        <form method="post" action="{% url 'AddtoCart' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value={{Product.id}}>
+                            <div class="product__details__quantity">
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <input type="text" value="1" name="quantity">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="primary-btn">ADD TO CARD</button>
+                            <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
+                        </form>
+                        {% else %}
+                            <span>please login before add your product to card</span>
+                        {% endif %}
+
+
+                        <ul>
+                            <li><b>Availability</b> <span>In Stock</span></li>
+                            
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="product__details__tab">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                <div class="product__details__tab__desc">
+                                    <h6>Description</h6>
+                                    <p>{{Product.decriptions}}</p>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Product Details Section End -->
+    <!-- Related Product Section Begin -->
+    {% if relatedProduct %}  
+    <section class="related-product">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title related__product__title">
+                        <h2>Related Product</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for relatedproduct in relatedProduct %}                    
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" data-setbg="{{relatedproduct.cover_image.url}}">
+                        </div>
+                        <div class="product__item__text">
+                            <h6><a href="{% url 'productDetail' product_id=relatedproduct.id %}">{{relatedproduct.name}}</a></h6>
+                            <h5>₹{{relatedproduct.price}}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div> 
+        </div>
+    </section>
+    {% endif %}
+    <!-- Related Product Section End -->
+{% endblock content %}
