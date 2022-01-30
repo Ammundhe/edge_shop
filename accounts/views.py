@@ -17,14 +17,17 @@ class Login(View):
         context={
             'navigationCategories':self.navigationCategories,
             'form':form,
+            'next':request.GET.get('next'),
         }
         return render(request, self.template_name,context )
 
     def post(self, request):
         form=self.form_class(data=request.POST)
         if form.is_valid():
-             Authlogin(request, form.get_user())
-             return redirect('Homepage')
+            Authlogin(request, form.get_user())
+            if request.POST.get('next'):
+                return redirect(request.POST.get('next'))
+            return redirect('Homepage')
         context={
             'navigationCategories':self.navigationCategories,
             'form':form,

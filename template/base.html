@@ -1,4 +1,6 @@
 {% load static %}
+{% load cartcount %}
+{%cartCount request as count_of_cart%}
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -22,6 +24,9 @@
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %} " type="text/css">
     <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %} " type="text/css">
     <link rel="stylesheet" href="{% static 'css/style.css' %} " type="text/css">
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+
+
 </head>
 
 <body>
@@ -138,7 +143,7 @@
                     <div class="header__cart">
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                            <li><a href="{% url 'Mycart' %}"><i class="fa fa-shopping-bag"></i> <span>{{count_of_cart}}</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -172,7 +177,6 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <script src="{% static 'js/jquery-3.3.1.min.js' %} "></script>
     <script src="{% static 'js/bootstrap.min.js' %} "></script>
     <script src="{% static 'js/jquery.nice-select.min.js' %} "></script>
     <script src="{% static 'js/jquery-ui.min.js' %} "></script>
@@ -180,6 +184,7 @@
     <script src="{% static 'js/mixitup.min.js' %} "></script>
     <script src="{% static 'js/owl.carousel.min.js' %} "></script>
     <script src="{% static 'js/main.js' %} "></script>
+
 
 </body>
 

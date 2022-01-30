@@ -1,113 +1,99 @@
-{% extends 'base.html' %} 
-
-
-
+{% extends 'base.html' %}
 {% block content %}
 <section class="product spad">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-3 col-md-5">
-        <div class="sidebar">
-          <div class="sidebar__item">
-            <h4>Department</h4>
-            <ul>
-                {% for navigationCategory in navigationCategories %}
-                <li><a 
-                  {% if navigationCategory.id == product_category_id %}
-                    class="text-success"
-                  {% endif %}
-                  href="{% url 'Productlisting' product_category_id=navigationCategory.id%}">{{navigationCategory.name}}</a></li>                
-                {% endfor %}
-            </ul>
-          </div>
-          <div class="sidebar__item">
-            <h4>Price</h4>
-            <div class="price-range-wrap">
-              <div
-                class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                data-min="10"
-                data-max="540"
-              >
-                <div
-                  class="ui-slider-range ui-corner-all ui-widget-header"
-                ></div>
-                <span
-                  tabindex="0"
-                  class="ui-slider-handle ui-corner-all ui-state-default"
-                  style="left: 0%"
-                ></span>
-                <span
-                  tabindex="0"
-                  class="ui-slider-handle ui-corner-all ui-state-default"
-                  style="left: 100%"
-                ></span>
-                <div
-                  class="ui-slider-range ui-corner-all ui-widget-header"
-                  style="left: 0%; width: 100%"
-                ></div>
-              </div>
-              <div class="range-slider">
-                <div class="price-input">
-                  <input type="text" id="minamount" />
-                  <input type="text" id="maxamount" />
+    <div class="container">
+        <form method="get" id="product-form">
+            <div class="row">
+                <div class="col-lg-3 col-md-5">
+                    <div class="sidebar">
+                        <div class="sidebar__item">
+                            <h4>Department</h4>
+                            <ul>
+                                {% for navigationCategory in navigationCategories %}
+                                    <li><a
+                                        {% if navigationCategory.id == product_category_id %}
+                                          class = "text-info"
+                                        {% endif %}
+                                        href="{% url 'Productlisting' product_category_id=navigationCategory.id %}">{{navigationCategory.name}}</a></li>
+                                {% endfor %}
+                                
+                            </ul>
+                        </div>
+                        <div class="sidebar__item">
+                            <h4>Price</h4>
+                            <div class="price-range-wrap">
+                                <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                                    data-min="10" data-max="100000">
+                                    <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"
+                                        style="left: 0%;"></span>
+                                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"
+                                        style="left: 100%;"></span>
+                                    <div class="ui-slider-range ui-corner-all ui-widget-header"
+                                        style="left: 0%; width: 100%;"></div>
+                                </div>
+                                <div class="range-slider">
+                                    <div class="price-input">
+                                        <input type="text" id="minamount" name="min">
+                                        <input type="text" id="maxamount" name="max">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <div class="col-lg-9 col-md-7">
-
-        <div class="filter__item">
-          <div class="row">
-            <div class="col-lg-4 col-md-5">
-              <div class="filter__sort">
-                <span>Sort By</span>
-                <select style="display: none">
-                  <option value="0">Default</option>
-                  <option value="0">Default</option>
-                </select>
-                <div class="nice-select" tabindex="0">
-                  <span class="current">Default</span>
-                  <ul class="list">
-                    <li data-value="0" class="option selected">Default</li>
-                    <li data-value="0" class="option">price High to Low</li>
-                    <li data-value="0" class="option">price Low to High</li>
-                </ul>
+                <div class="col-lg-9 col-md-7">
+                   
+                    <div class="filter__item">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-5">
+                                <div class="filter__sort">
+                                    <span>Sort By</span>
+                                    <select style="display: none;" name="sorting" class="product-sorting">
+                                        <option value="">Default</option>
+                                        <option value="low">Price Low-High</option>
+                                        <option value="high">Price High-Low</option>
+                                    </select>
+                                    <!-- <div class="nice-select" tabindex="0"><span class="current">Default</span>
+                                        <ul class="list">
+                                            <li data-value="0" class="option selected">Default</li>
+                                            <li data-value="0" class="option">Price Low-High</li>
+                                            <li data-value="0" class="option">Price High-Low</li>
+                                        </ul>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4">
+                                <div class="filter__found">
+                                    <h6><span>{{Product.count}}</span> Products found</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for product in Product %}
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="{{product.cover_image.url}}">
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6><a href="{% url 'productDetail' product_id=product.id %}">{{product.name}}</a></h6>
+                                        <h5>₹{{product.price}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-              </div>
             </div>
-            <div class="col-lg-4 col-md-4">
-              <div class="filter__found">
-                <h6><span>{{Product.count}}</span> Products found</h6>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-3">
-
-            </div>
-          </div>
-        </div>
-        <div class="row">
-            {% for product in Product %}            
-            <div class="col-lg-4 col-md-6 col-sm-6">
-              <div class="product__item">
-                <div
-                  class="product__item__pic set-bg"
-                  data-setbg="{{product.cover_image.url}}"
-                  style="background-image: url('img/product/product-1.jpg')"
-                >
-                </div>
-                <div class="product__item__text">
-                  <h6><a href="{% url 'productDetail' product_id=product.id %}">{{product.name}}</a></h6>
-                  <h5>₹{{product.price}}</h5>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-
-      </div>
+        </form>
     </div>
-  </div>
 </section>
+<script>
+    $(".product-sorting").on("change", function(){
+        $("#product-form").submit()
+    })
+</script>
 {% endblock content %}

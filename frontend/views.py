@@ -18,7 +18,28 @@ class ProductListing(View):
     template_name='product-listing.html'
     def get(self, request, product_category_id=None):
         navigationCategories=productCategory.objects.filter(status=True)
-        Product=product.objects.filter(status=True, product_category_id=product_category_id)
+        searchdict={
+            "status":True
+            
+            }
+        if product_category_id:
+            searchdict['product_category_id']=product_category_id
+        if request.GET.get('search'):
+            searchdict['name__icontains']=request.GET.get('search')
+        
+        if request.GET.get('min'):
+            searchdict['price__gte']=request.GET.get('min').replace('₹','')
+        if request.GET.get('max'):
+            searchdict['price__lte']=request.GET.get('max').replace('₹', '')
+
+        if request.GET.get('sorting'):
+
+            if request.GET.get('sorting')=='low':
+                Product=product.objects.filter(**searchdict).order_by('price')
+            if request.GET.get('sorting')=='high':
+                Product=product.objects.filter(**searchdict).order_by('-price')
+        else:
+            Product=product.objects.filter(**searchdict)
         context={
             'navigationCategories':navigationCategories,
             'Product':Product,
