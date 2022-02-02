@@ -129,7 +129,7 @@
                             <li class="active"><a href="{% url 'Homepage' %}">Home</a></li>                                    
                             <li><a href="javascript:void0">Category</a>
                                 <ul class="header__menu__dropdown">
-                                    {% for navigationCategory in navigationCategories %}
+                                    {% for navigationCategory in  navigationCategories %}
                                     <li><a href="{% url 'Productlisting' product_category_id=navigationCategory.id %}">{{navigationCategory.name}}</a></li>
                                     {% endfor %}
                                 </ul>

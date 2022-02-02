@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <div class="contact-form spad">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="contact__form__title">
-                    <h2>Login</h2>
+                    <h2>Update profile</h2>
                 </div>
             </div>
         </div>
@@ -15,15 +14,14 @@
             {% csrf_token %}
             <div class="row">
                 <input type="hidden" name="next" value="{{next}}">
-                {{form}}
+                {{person_info}}
             </div>
-        <a class="text-info" href="{% url 'Create_account' %}"><i class="fa fa-user"></i>create account</a>
-        <div class="col-lg-12 text-center">
-            <button type="submit" class="site-btn">Login</button>
+            <button type="submit" class="site-btn">Update profile</button>
             </div>
         </form>
     </div>
 </div>
+
 
 {% endblock content %}
 
