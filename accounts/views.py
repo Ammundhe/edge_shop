@@ -1,15 +1,12 @@
-from datetime import date
-import email
-from venv import create
-from wsgiref.util import request_uri
 from django.shortcuts import redirect, render
 from django.views import View
 from product.models import productCategory
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
 from django.contrib.auth import login as Authlogin, authenticate
 from django.contrib.auth import logout as Authlogout
-from .forms import Create_accountform
-from django.contrib.auth.models import User
+from user_profile.models import user_profile
+from user_profile.models import user_profile
+from .forms import Userform,User_profileform
 
 
     # User is authenticated
@@ -78,20 +75,45 @@ class create_account(View):
     
 class update_profile(View):
     template_name='update-profile.html'
-    account=Create_accountform
+    user=Userform
     navigationCategories=productCategory.objects.filter(status=True)
 
     def get(self, request):
-        person_info=self.account()
+        userform=self.user()
         context={
             'navigationCategories':self.navigationCategories,
-            'person_info':person_info,
+            'userform':userform,
         }
         return render(request, self.template_name, context)
     
     def post(self, request):
-        new_info=self.account(data=request.POST, instance=request.user)
-        if new_info.is_valid():
-            new_info.save()
-            return redirect("Homepage")
+        user_info=self.user(data=request.POST, instance=request.user)
+        if user_info.is_valid():
+            user_info.save()
+            return redirect("userProfile")
         return redirect("updateProfile")
+
+class userProfile(View):
+    template_name='user-profile.html'
+    user_profile=User_profileform
+    navigationCategories=productCategory.objects.filter(status=True)
+
+    def get(self, request):
+        user_profileform=self.user_profile()
+        context={
+            'navigationCategories':self.navigationCategories,
+            'user_profileform':user_profileform
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        adress=request.POST.get('adress')
+        mobile=request.POST.get('mobile')
+        profile_picture=request.POST.get('profile_picture')
+        user_profile.objects.create(
+            user=request.user,
+            adress=adress,
+            mobile=mobile,
+            profile_picture=profile_picture
+        )
+        return redirect("userProfile")
