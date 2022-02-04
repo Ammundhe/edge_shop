@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block content %}
+<!-- Blog Section Begin -->
+<section class="blog spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-5">
+        <div class="blog__sidebar">
+          <div class="blog__sidebar__search">
+            <form method="get" action="{% url 'NewPost' %}">
+              <input type="text" name="search" placeholder="Search..." />
+              <button type="submit"><span class="icon_search"></span></button>
+            </form>
+          </div>
+          <div class="blog__sidebar__item">
+            <h4>Categories</h4>
+            <ul>
+                <li><a href="#">All</a></li>
+                {% for blogCategory in blogCategories %}
+                <li><a href="{% url 'NewPost' blogCategory_id=blogCategory.id %}">{{blogCategory.name}}</a></li>
+                {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 col-md-7">
+        <div class="row">
+            {% for post in blogPost %}
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="blog__item">
+                <div class="blog__item__pic">
+                  <img src="{{post.cover_image.url}}" alt="" />
+                </div>
+                <div class="blog__item__text">
+                  <ul>
+                    <li><i class="fa fa-calendar-o"></i> {{post.date}}</li>
+                    <li><i class="fa fa-comment-o"></i> 5</li>
+                  </ul>
+                  <h5><a href="#">{{post.title}}</a></h5>
+                  <p>
+                    {{post.description}}
+                  </p>
+                  <a href="{% url 'BlogPost' slug=post.slug %}" class="blog__btn"
+                    >READ MORE <span class="arrow_right"></span
+                  ></a>
+                </div>
+              </div>
+            </div>
+            
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog Section End -->
+
+{% endblock content %}

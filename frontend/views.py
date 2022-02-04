@@ -1,15 +1,17 @@
 from django.shortcuts import render
 from django.views import View
 from product.models import productCategory, product, productImage
-
+from blog.models import BlogPost
 class HomePage(View):
 
     def get(self,request):
         navigationCategories=productCategory.objects.filter(status=True)
         productCategories=productCategory.objects.filter(status=True).order_by('-id')[:3]
+        new_post=BlogPost.objects.all().order_by('-id')[:3]
         context={
             'navigationCategories':navigationCategories,
-            'productCategories':productCategories
+            'productCategories':productCategories,
+            'new_post':new_post,
         }
         return render(request, 'home-page.html',context)
     
