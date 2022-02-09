@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
 from cart.models import Cart
-from product.models import productCategory
+from product.models import product, productCategory
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
@@ -12,6 +12,10 @@ class AddtoCart(View):
         quantity = request.POST.get('quantity')
         product_id = request.POST.get('product_id')
         cart, created = Cart.objects.get_or_create(product_id=product_id, user_id=request.user.id)
+        if product_id:
+            Product=product.objects.get(id=product_id)
+            Product.stock=int(Product.stock)-int(quantity)
+            Product.save()
         if created:
             cart.quantity = quantity
         else:

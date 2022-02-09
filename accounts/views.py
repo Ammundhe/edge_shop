@@ -30,10 +30,10 @@ class Login(View):
         form=self.form_class(data=request.POST)
         if form.is_valid():
             Authlogin(request, form.get_user())
-            if request.POST.get('next'):
+            if request.POST.get('next') !='None':
                 return redirect(request.POST.get('next'))
             return redirect('Homepage')
-
+       
         context={
             'navigationCategories':self.navigationCategories,
             'form':form,

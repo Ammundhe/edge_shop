@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views import View
 from product.models import productCategory, product, productImage
 from blog.models import BlogPost
+
+
 class HomePage(View):
 
     def get(self,request):
@@ -69,3 +71,4 @@ class productDetail(View):
             'relatedProduct':relatedProduct,
         }
         return render(request, self.template_name, context) 
+    

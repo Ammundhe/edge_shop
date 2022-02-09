@@ -10,6 +10,10 @@ class productCategory(models.Model):
 
 class product(models.Model):
     """product models"""
+    stock_choices=(
+        ('Available', 'Available'),
+        ('Not Available', 'Not Available')
+    )
     product_category=models.ForeignKey(productCategory, on_delete=models.CASCADE, related_name='ProductCategory')
     name=models.CharField(max_length=255)
     decriptions=models.TextField()
@@ -17,6 +21,7 @@ class product(models.Model):
     stock=models.IntegerField()
     cover_image=models.ImageField()
     status=models.BooleanField(default=True)
+    stock_status=models.CharField(max_length=255, choices=stock_choices, default='Available')
 
     def __str__(self) -> str:
         return str(self.name)

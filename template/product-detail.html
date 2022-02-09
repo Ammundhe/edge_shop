@@ -43,7 +43,18 @@
 
 
                         <ul>
-                            <li><b>Availability</b> <span>In Stock</span></li>
+                            {% if Product.stock %}
+                            {% if Product.stock_status == 'Available'%}
+                            <li><b>Stock:</b> <span>{{Product.stock_status}}</span></li>
+                            <li><b>No of Product:</b> <span>{{Product.stock}}</span></li>
+                            
+                            {% else %}
+                            <li><b>Stock:</b> <span>{{Product.stock_status}}</span></li>
+                            {% endif %}
+                            
+                            {% else %}
+                            <li><b>Stock:</b> <span>Not Available</span></li>
+                            {% endif %}
                             
 
                         </ul>
