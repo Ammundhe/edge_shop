@@ -1,4 +1,3 @@
-from unicodedata import category
 from django.db import models
 
 class BlogCategory(models.Model):

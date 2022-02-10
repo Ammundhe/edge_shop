@@ -1,4 +1,3 @@
-from unicodedata import name
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import authentication
 from rest_framework import status
@@ -9,9 +8,12 @@ from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.views import APIView
 from rest_framework.settings import api_settings
 from django.contrib.auth.models import User
-from .serializers import user_serializer, productCategorySerializer,productSerializer, CartSerializer
+
+from order.models import order
+from .serializers import user_serializer, productCategorySerializer,productSerializer, CartSerializer, orderSerializer, blogCategorySerializer,blogPostserializer
 from product.models import productCategory, product
 from cart.models import Cart
+from blog.models import BlogCategory, BlogPost
 
 
 
@@ -72,3 +74,38 @@ class CartView(APIView):
                 return Response({'details':'Not found'}, status=status.HTTP_404_NOT_FOUND) 
         return Response({'datails':'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
 
+class checkoutView(APIView):
+    authentication_class=(authentication.TokenAuthentication)
+    permission_class=(IsAuthenticated)
+
+    def get(self, request):
+        try:
+            cart=Cart.objects.filter(user=request.user)
+
+        except:
+            pass
+
+class orderview(ViewSet):
+    authentication_class=[authentication.TokenAuthentication]
+    permission_class=[IsAuthenticated]
+    serializer_class=orderSerializer
+    queryset=order.objects.all()
+
+    def list(self, request):
+        queryset=order.objects.filter(user=request.user)
+        serializer=self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self,request, pk):
+        queryset=order.objects.get(pk=pk, user=request.user)
+        serializer=self.serializer_class(queryset)
+        return Response(serializer.data)
+
+class blogCategoryview(ModelViewSet):
+    http_method_names=['get']
+    serializer_class=blogCategorySerializer
+    queryset=BlogCategory.objects.all()
+
+class blogPostview(ModelViewSet):
+    serializer_class=blogPostserializer
+    queryset=BlogPost.objects.all()

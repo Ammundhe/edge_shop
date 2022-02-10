@@ -62,14 +62,17 @@
                                 Upadate Cart</button>
                         </div>
                     </div>
+                </form>
                     <div class="col-lg-6">
-                        <div class="shoping__continue">
-                            <div class="shoping__discount">
-                                <h5>Discount Codes</h5>
-                                    <input type="text" placeholder="Enter your coupon code">
-                                    <button type="submit" class="site-btn">APPLY COUPON</button>
+                        <form method="get">
+                            <div class="shoping__continue">
+                                <div class="shoping__discount">
+                                    <h5>Discount Codes</h5>
+                                        <input type="text" name="coupon" placeholder="Enter your coupon code">
+                                        <button type="submit" class="site-btn">APPLY COUPON</button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="col-lg-6">
                         <div class="shoping__checkout">
@@ -90,7 +93,6 @@
                 </div>
                 {% endif %}
             </div>
-        </form>
     </section>
     <!-- Shoping Cart Section End -->
 {% endblock content %}

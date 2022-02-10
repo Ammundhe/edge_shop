@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from cart.models import Cart
+from cart.models import Cart, couponCode
 from product.models import product, productCategory
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -46,7 +46,6 @@ class Mycart(View):
         subtotal=0
         total=0
         shippingcost=50
-
         for key,cart in enumerate(carts):
             productTotal=int(cart.product.price)*int(cart.quantity)
             subtotal+=productTotal
@@ -58,15 +57,31 @@ class Mycart(View):
                 'product_Total':productTotal,
                 'cart_id':cart.id
             }
-        total=shippingcost+subtotal
-        context={
-            'navigationCategories':navigationCategories,
-            'carts':list(cartDate.values()),
-            'subtotal':subtotal,
-            'total':total,
-            'shippingCost':shippingcost
-        }
-        return render(request, self.template_name, context)
+        sub_total=shippingcost+subtotal
+        if request.GET.get('coupon'):
+            coupon_code=request.GET.get('coupon')
+            couponcode=couponCode.objects.get(code=coupon_code)
+            total=float(sub_total)-(float(sub_total*couponcode.discount))
+            context={
+                'navigationCategories':navigationCategories,
+                'carts':list(cartDate.values()),
+                'subtotal':subtotal,
+                'total':total,
+                'shippingCost':shippingcost
+            }
+            return render(request, self.template_name, context)
+        else:
+            total=sub_total
+
+            context={
+                'navigationCategories':navigationCategories,
+                'carts':list(cartDate.values()),
+                'subtotal':subtotal,
+                'total':total,
+                'shippingCost':shippingcost
+            }
+            return render(request, self.template_name, context)
+       
     
     def post(self, request):
         cart_id_list=request.POST.getlist('card_id')      

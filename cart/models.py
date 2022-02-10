@@ -12,3 +12,10 @@ class Cart(models.Model):
     def __str__(self):
         """ Example: afsar SAMSUNG S21 FE, Quantity:1"""
         return f'{self.user} {self.product}, - Quantity: {self.quantity}'
+
+class couponCode(models.Model):
+    code=models.CharField(max_length=255, null=True, blank=True)
+    discount=models.FloatField(max_length=15)
+
+    def __str__(self) -> str:
+        return str(self.code)

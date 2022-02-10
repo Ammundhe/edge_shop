@@ -1,8 +1,10 @@
-from dataclasses import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from product.models import product, productCategory
+from order.models import order
 from cart.models import Cart
+from blog.models import BlogCategory,BlogPost
+
 
 class user_serializer(serializers.ModelSerializer):
     class Meta:
@@ -58,3 +60,18 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 
+class orderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model:order
+        fields='__all__'
+
+class blogCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=BlogCategory
+        fields=['name', ]
+    
+class blogPostserializer(serializers.ModelSerializer):
+    class Meta:
+        model=BlogPost
+        fields='__all__'
+        depth=1
