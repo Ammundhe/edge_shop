@@ -1,0 +1,79 @@
+<body id="body">
+    
+</body>
+{% csrf_token %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function success(razorPayResponse){
+        var csrfToken=`{{csrf_token}}`
+        console.log(csrfToken);
+        var data = new FormData();
+        data.append("razorpay_payment_id", razorPayResponse.razorpay_payment_id);
+        data.append("razorpay_order_id", razorPayResponse.razorpay_order_id);
+        data.append("razorpay_signature", razorPayResponse.razorpay_signature);
+        data.append("first_name", '{{first_name}}');
+        data.append("last_name", '{{last_name}}');
+        data.append("address", '{{address}}');
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function() {
+        if(this.readyState === 4) {
+            console.log(this.responseText);
+            window.location.href = '{% url 'ThankYou' %}'
+        }
+        });
+
+        xhr.open("POST", "{% url 'PaymentSuccess' %}");
+        xhr.setRequestHeader("x-csrftoken", csrfToken);
+        xhr.send(data);
+    }
+    function failpayment (data){
+
+    }
+        
+var options = {
+    "key": "rzp_test_k6sHZT5YbqmvML", // Enter the Key ID generated from the Dashboard
+    "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Edge shop",
+    "description": "product procced",
+    "image": "",
+    "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 2
+    "handler": function (response){
+        // alert(response.razorpay_payment_id);
+        // alert(response.razorpay_order_id);
+        // alert(response.razorpay_signature)
+        success(response)
+    },
+    "prefill": {
+        "name": "{{request.user.first_name}} {{request.user.last_name}}",
+        "email": "{{request.user.email}}",
+        "contact": "{{request.user.UserProfile.mobile}}}"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        // alert(response.error.code);
+        // alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
+        failpayment(response)
+});
+window.onload = function() {
+    rzp1.open();
+    e.preventDefault();
+    
+  };
+
+</script>

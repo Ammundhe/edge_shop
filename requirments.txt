@@ -1,3 +1,8 @@
 django==4.0.1
 Pillow==9.0.0
 djangorestframework==3.13.1
+razorpay
+
+
+key id:rzp_test_k6sHZT5YbqmvML
+key serect:xzGWzEec17JFycss2MFMTitH

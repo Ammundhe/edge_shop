@@ -11,7 +11,8 @@
             </div>
             <div class="checkout__form" >
                 <h4>Billing Details</h4>
-                <form action="{% url 'orderDetail' %}">
+                <form action="" method='post'>
+                    {% csrf_token %}
                     <div class="row">
                         <div class="col-lg-8 col-md-6">
                             <div class="row">
