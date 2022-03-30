@@ -1,6 +1,7 @@
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import authentication
 from rest_framework import status
+import razorpay
 from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -8,8 +9,8 @@ from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.views import APIView
 from rest_framework.settings import api_settings
 from django.contrib.auth.models import User
-
-from order.models import order
+from datetime import datetime
+from order.models import order, orderDetail
 from .serializers import user_serializer, productCategorySerializer,productSerializer, CartSerializer, orderSerializer, blogCategorySerializer,blogPostserializer
 from product.models import productCategory, product
 from cart.models import Cart
@@ -81,9 +82,53 @@ class checkoutView(APIView):
     def get(self, request):
         try:
             cart=Cart.objects.filter(user=request.user)
+            subtotal=0
+            total=0
+            shippingCost=50
+            for key, cart in enumerate(cart):
+                productTotal=int(cart.quantity)*int(cart.product.price)
+                subtotal+=productTotal
+            total=shippingCost+subtotal
+            client=razorpay.Client(auth=("rzp_test_k6sHZT5YbqmvML", "xzGWzEec17JFycss2MFMTitH"))
+            receipt=f'order_rcptid{request.user.id}'
+            data = {"amount": total, "currency": "INR", "receipt": receipt}
+            payment = client.order.create(data=data)
+            context={
+                "order_id":payment["id"],
+                "subtotal":subtotal,
+                "shippingCost":shippingCost,
+                "total":total
+            }
+            return Response({"status":"success", "data":context})
+        except Exception as e:
+            return Response({'details' : str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        razorpay_payment_id=request.POST.get('razorpay_payment_id')
+        razorpay_order_id= request.POST.get('razorpay_order_id')
+        razorpay_signature= request.POST.get('razorpay_signature')
+        first_name= request.POST.get('first_name')
+        last_name= request.POST.get('last_name')
+        address =request.POST.get('address')
+        carts=Cart.objects.filter(user=request.user)
+        if carts:
+            orders=order.objects.create(
+                user=request.user,
+                name=f'{first_name} {last_name}',
+                address=address,
+                date_time=datetime.now(),
+                razor_pay_order_id=razorpay_order_id,
 
-        except:
-            pass
+            )
+            for cart in carts:
+                print(cart)
+                orderDetail.objects.create(
+                    order=orders,
+                    product=cart.product,
+                    quantity=cart.quantity,
+                    product_price=cart.product.price,
+                )
+            carts.delete()
+        return Response({'status':'success'})
 
 class orderview(ViewSet):
     authentication_class=[authentication.TokenAuthentication]
